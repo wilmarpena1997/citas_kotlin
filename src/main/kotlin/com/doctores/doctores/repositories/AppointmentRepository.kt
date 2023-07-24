@@ -13,4 +13,8 @@ interface AppointmentRepository: JpaRepository<Appointment, Long> {
 
     @Query("delete from citas where id_citas =:id", nativeQuery = true)
     fun deleteAppointmentByById(id: Long): Unit
+
+
+    @Query("select especialidad from doctores where id_doctor =:id", nativeQuery = true)
+    fun findDoctor(id: Long): String
 }

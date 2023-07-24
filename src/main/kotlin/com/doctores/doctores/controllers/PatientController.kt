@@ -16,7 +16,7 @@ class PatientController {
     @Autowired
     private lateinit var patientService: PatientService
 
-    @GetMapping(Patient)
+    /*@GetMapping(Patient)
     fun getAllPatients(): List<Patient> = patientService.getAllPatients()
 
     @PostMapping(CreatePatients)
@@ -35,7 +35,53 @@ class PatientController {
     @DeleteMapping(DeletePatient)
     fun deletePatient(
             @PathVariable("id")id:Long
-    ): Unit = patientService.deletePatientById(id)
+    ): Unit = patientService.deletePatientById(id)*/
+
+    @GetMapping(Patient)
+    fun getAllPatients(): List<Patient> = patientService.getAllPatients()
+
+    @PostMapping(CreatePatients)
+    fun createPatient(@RequestBody @Validated request: PatientRequest): ResponseEntity<PatientResponse> {
+        try {
+            return ResponseEntity(patientService.createPatient(request), HttpStatus.CREATED)
+        }catch (e : Error){
+            return ResponseEntity(PatientResponse(message = e.message), HttpStatus.BAD_REQUEST)
+        }
+    }
+
+    @GetMapping(GetPatientById)
+    fun getPatienttById(
+        @PathVariable("id") id: Long
+    ): PatientResponse {
+        try {
+            return PatientResponse("Patient $id found", patientService.getPatientById(id))
+        } catch (e: Error){
+            return PatientResponse(e.message)
+        }
+    }
+
+    @PutMapping(UpdatePatient)
+    fun updatePatient(
+        @PathVariable("id") id: Long,
+        @RequestBody @Validated request: UpdatePatientRequest
+    ): ResponseEntity<PatientResponse> {
+        try {
+            return ResponseEntity(patientService.updatePatient(id, request), HttpStatus.ACCEPTED)
+        }catch (e : Error) {
+            return ResponseEntity(PatientResponse(message = e.message), HttpStatus.BAD_REQUEST)
+        }
+    }
+
+    @DeleteMapping(DeletePatient)
+    fun deletePatient(
+        @PathVariable("id")id:Long
+    ): ResponseEntity<PatientResponse> {
+        try {
+            return ResponseEntity(patientService.deletePatientById(id), HttpStatus.ACCEPTED)
+        } catch (e: Error) {
+            return ResponseEntity(PatientResponse(message = e.message), HttpStatus.BAD_REQUEST)
+        }
+    }
 
 
 }
